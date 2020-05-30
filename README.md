@@ -56,7 +56,7 @@ Run the following commands to download and build for execution:
 [gopl]: http://www.gopl.io/
 [csp]: https://en.wikipedia.org/wiki/Communicating_sequential_processes
 [rfc959]: https://tools.ietf.org/html/rfc959
-[more]: server.go#L94-L137
+[more]: main.go#L94-L137
 [ftp]: https://cr.yp.to/ftp.html
 [1985]: https://tools.ietf.org/html/rfc959
 [design]: https://github.com/justinpage/building-evolutionary-architectures/blob/master/chapter-7.md#antipattern-code-reuse-abuse
