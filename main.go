@@ -283,12 +283,12 @@ func (s *server) handleList(arg []string) {
 	// list specific file or directory content
 	case 2:
 		dir := filepath.Clean(arg[1])
-		path, _ := filepath.Abs(fmt.Sprintf("%s/%s", s.path, dir))
+		path, _ := filepath.Abs(filepath.Join(s.path, dir))
 
 		// Prevent listing a directory above root
 		if !strings.HasPrefix(path, s.root) {
 			dir := filepath.Clean("/" + dir)
-			path, _ = filepath.Abs(fmt.Sprintf("%s/%s", s.root, dir))
+			path, _ = filepath.Abs(filepath.Join(s.root, dir))
 		}
 
 		info, err := os.Stat(path)
@@ -324,7 +324,7 @@ func (s *server) handleList(arg []string) {
 
 func (s *server) handleSize(arg []string) {
 	dir := filepath.Clean(arg[1])
-	path, _ := filepath.Abs(fmt.Sprintf("%s/%s", s.path, dir))
+	path, _ := filepath.Abs(filepath.Join(s.path, dir))
 
 	file, err := os.Open(path)
 	if err != nil {
@@ -354,12 +354,12 @@ func (s *server) handleRetrieve(arg []string) {
 	defer conn.Close()
 
 	dir := filepath.Clean(arg[1])
-	path, _ := filepath.Abs(fmt.Sprintf("%s/%s", s.path, dir))
+	path, _ := filepath.Abs(filepath.Join(s.path, dir))
 
 	// Prevent retrieving a remote-file above root
 	if !strings.HasPrefix(path, s.root) {
 		dir := filepath.Clean("/" + dir)
-		path, _ = filepath.Abs(fmt.Sprintf("%s/%s", s.root, dir))
+		path, _ = filepath.Abs(filepath.Join(s.root, dir))
 	}
 
 	file, err := os.Open(path)
@@ -407,13 +407,13 @@ func (s *server) handleNameList(arg []string) {
 	path := s.path
 	if len(arg) > 1 {
 		// Support sub-directory listing when available
-		path, _ = filepath.Abs(fmt.Sprintf("%s/%s", s.path, arg[1]))
+		path, _ = filepath.Abs(filepath.Join(s.path, arg[1]))
 	}
 
 	// Prevent listing a directory above root
 	if !strings.HasPrefix(path, s.root) {
 		dir := filepath.Clean("/" + arg[1])
-		path, _ = filepath.Abs(fmt.Sprintf("%s/%s", s.root, dir))
+		path, _ = filepath.Abs(filepath.Join(s.root, dir))
 	}
 
 	files, err := ioutil.ReadDir(path)
@@ -444,7 +444,7 @@ func (s *server) handlePrintWorkingDirectory() {
 
 func (s *server) handleChangeWorkingDirectory(arg []string) {
 	dir := filepath.Clean(arg[1])
-	path, _ := filepath.Abs(fmt.Sprintf("%s/%s", s.path, dir))
+	path, _ := filepath.Abs(filepath.Join(s.path, dir))
 
 	// Prevent changing to a directory above root
 	if !strings.HasPrefix(path, s.root) {
@@ -483,7 +483,7 @@ func (s *server) handleMakeDirectory(arg []string) {
 	}
 
 	dir := filepath.Clean(arg[1])
-	path, _ := filepath.Abs(fmt.Sprintf("%s/%s", s.path, dir))
+	path, _ := filepath.Abs(filepath.Join(s.path, dir))
 
 	// Check if the parent directory exists before creating children
 	info, err := os.Stat(filepath.Dir(path))
@@ -504,7 +504,7 @@ func (s *server) handleMakeDirectory(arg []string) {
 	// Prevent creating a directory above root
 	if !strings.HasPrefix(path, s.root) {
 		dir := filepath.Clean("/" + dir)
-		path, _ := filepath.Abs(fmt.Sprintf("%s/%s", s.root, dir))
+		path, _ := filepath.Abs(filepath.Join(s.root, dir))
 
 		err := os.Mkdir(path, 0755)
 		if os.IsExist(err) {
@@ -541,12 +541,12 @@ func (s *server) handleRemoveDirectory(arg []string) {
 	}
 
 	dir := filepath.Clean(arg[1])
-	path, _ := filepath.Abs(fmt.Sprintf("%s/%s", s.path, dir))
+	path, _ := filepath.Abs(filepath.Join(s.path, dir))
 
 	// Prevent deleting a directory above root
 	if !strings.HasPrefix(path, s.root) {
 		dir := filepath.Clean("/" + dir)
-		path, _ = filepath.Abs(fmt.Sprintf("%s/%s", s.root, dir))
+		path, _ = filepath.Abs(filepath.Join(s.root, dir))
 	}
 
 	info, err := os.Stat(path)
@@ -580,12 +580,12 @@ func (s *server) handleDelete(arg []string) {
 	}
 
 	dir := filepath.Clean(arg[1])
-	path, _ := filepath.Abs(fmt.Sprintf("%s/%s", s.path, dir))
+	path, _ := filepath.Abs(filepath.Join(s.path, dir))
 
 	// Prevent deleting a remote-file above root
 	if !strings.HasPrefix(path, s.root) {
 		dir := filepath.Clean("/" + dir)
-		path, _ = filepath.Abs(fmt.Sprintf("%s/%s", s.root, dir))
+		path, _ = filepath.Abs(filepath.Join(s.root, dir))
 	}
 
 	info, err := os.Stat(path)
@@ -626,7 +626,7 @@ func (s *server) handleStore(arg []string) {
 	s.handleResponse(AcceptedDataConnection)
 
 	dir := filepath.Clean(arg[1])
-	path, _ := filepath.Abs(fmt.Sprintf("%s/%s", s.path, dir))
+	path, _ := filepath.Abs(filepath.Join(s.path, dir))
 
 	file, err := os.Create(path)
 	if err != nil {
